@@ -7,9 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\Kernel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
+use Faker;
 
 class AppServiceProvider extends ServiceProvider
 {
+    public function register()
+    {
+        $this->app->singleton((Faker\Generator::class), function () {
+            $faker = Faker\Factory::create();
+            $faker->addProvider(new \Tests\Faker\StorageFileProvider($faker));
+            return $faker;
+        });
+    }
+
     public function boot(): void
     {
         Model::shouldBeStrict(!app()->isProduction());
