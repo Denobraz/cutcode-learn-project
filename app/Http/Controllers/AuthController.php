@@ -8,7 +8,6 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\Rules\Password as PasswordValidation;
@@ -88,9 +87,13 @@ class AuthController extends Controller
 
         $status = Password::sendResetLink($request->only('email'));
 
-        return $status === Password::RESET_LINK_SENT
-                    ? back()->with('message', __($status))
-                    : back()->withErrors(['email' => __($status)]);
+        if ($status === Password::RESET_LINK_SENT) {
+            flash()->info(__($status));
+            return back();
+        } else {
+            flash()->alert(__($status));
+            return back()->withErrors(['email' => __($status)]);
+        }
     }
 
     public function resetPassword(string $token): View
@@ -120,9 +123,13 @@ class AuthController extends Controller
             }
         );
 
-        return $status === Password::PASSWORD_RESET
-                    ? redirect()->route('login')->with('message', __($status))
-                    : back()->withErrors(['email' => __($status)]);
+        if ($status === Password::PASSWORD_RESET) {
+            flash()->info(__($status));
+            return redirect()->route('login');
+        } else {
+            flash()->alert(__($status));
+            return back()->withErrors(['email' => __($status)]);
+        }
     }
 
     public function github(): RedirectResponse

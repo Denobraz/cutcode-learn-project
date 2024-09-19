@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use Carbon\CarbonInterval;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\Kernel;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Faker;
 
@@ -22,6 +24,10 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        RateLimiter::for('auth', function ($request) {
+            return Limit::perMinute(20)->by($request->ip());
+        });
+
         Model::shouldBeStrict(!app()->isProduction());
 
         if (app()->isProduction()) {

@@ -9,6 +9,7 @@
     @vite(['resources/css/app.css', 'resources/sass/main.sass', 'resources/js/app.js'])
 </head>
 <body class="antialiased">
-
+    <x-flash />
+    @yield('content')
 </body>
 </html>
