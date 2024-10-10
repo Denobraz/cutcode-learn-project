@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (app()->isLocal()) {
-            Schema::create('categories', function (Blueprint $table) {
-                $table->id();
-                $table->string('slug')->unique();
-                $table->string('title');
-                $table->timestamps();
-            });
-        }
+        Schema::create('categories', function (Blueprint $table) {
+            $table->id();
+            $table->string('slug')->unique();
+            $table->string('title');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -26,6 +24,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        if (app()->isLocal()) {
+            Schema::dropIfExists('categories');
+        }
     }
 };
