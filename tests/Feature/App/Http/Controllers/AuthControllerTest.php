@@ -7,6 +7,7 @@ use App\Listeners\SendEmailNewUserListener;
 use App\Models\User;
 use App\Notifications\NewUserNotification;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
@@ -107,5 +108,21 @@ class AuthControllerTest extends TestCase
         $this->assertAuthenticatedAs($user);
 
         $response->assertRedirect(route('home'));
+    }
+
+    public function test_send_reset_link_email_success()
+    {
+        $email = 'test@mail.ru';
+        $user = User::factory()->create([
+            'email' => $email
+        ]);
+
+        Notification::fake();
+
+        $response = $this->post(action([AuthController::class, 'sendResetLinkEmail']), ['email' => $email]);
+
+        $response->assertValid();
+
+        Notification::assertSentTo($user, ResetPassword::class);
     }
 }
