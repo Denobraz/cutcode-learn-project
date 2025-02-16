@@ -17,4 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         Integration::handles($exceptions);
+
+        $exceptions->renderable(function (DomainException $e) {
+            flash()->alert($e->getMessage());
+            return back();
+        });
     })->create();
