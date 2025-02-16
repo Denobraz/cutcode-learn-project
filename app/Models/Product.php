@@ -19,6 +19,8 @@ class Product extends Model
         'thumbnail',
         'price',
         'brand_id',
+        'on_home_page',
+        'sorting',
     ];
 
     public function brand(): BelongsTo
