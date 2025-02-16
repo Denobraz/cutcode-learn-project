@@ -2,6 +2,7 @@
 
 return [
     App\Providers\AppServiceProvider::class,
+    App\Providers\DomainServiceProvider::class,
     App\Providers\TelescopeServiceProvider::class,
     App\Providers\ViewServiceProvider::class,
 ];
