@@ -6,9 +6,16 @@ use App\Http\Controllers\Auth\SignInController;
 use App\Http\Controllers\Auth\SignUpController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ThumbnailController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/', HomeController::class)->name('home');
+
+Route::get('/storage/images/{dir}/{method}/{size}/{file}', ThumbnailController::class)
+    ->where('method', 'resize|crop|fit')
+    ->where('size', '\d+x\d+')
+    ->where('file', '.+\.(jpg|jpeg|png|gif|webp)$')
+    ->name('thumbnail');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [SignInController::class, 'page'])->name('login');
